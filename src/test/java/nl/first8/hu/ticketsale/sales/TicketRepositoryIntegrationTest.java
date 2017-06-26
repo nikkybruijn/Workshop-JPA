@@ -55,7 +55,7 @@ public class TicketRepositoryIntegrationTest {
 
     @Before
     public void cleanDatabase() {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "sale", "ticket", "account");
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "audit_trail", "sale", "ticket", "account");
     }
 
     @Test
@@ -94,9 +94,9 @@ public class TicketRepositoryIntegrationTest {
 
         List<TicketDto> actualTickets = readTicketsResponse(result);
         assertEquals(2, actualTickets.size());
-        assertEquals(ticketGorillaz.getConcert().getArtist(), actualTickets.get(0).getArtist());
+        assertEquals(ticketGorillaz.getConcert().getArtist().getName(), actualTickets.get(0).getArtist());
         assertEquals(ticketGorillaz.getConcert().getLocation().getName(), actualTickets.get(0).getLocation());
-        assertEquals(ticketThieveryCo.getConcert().getArtist(), actualTickets.get(1).getArtist());
+        assertEquals(ticketThieveryCo.getConcert().getArtist().getName(), actualTickets.get(1).getArtist());
         assertEquals(ticketGorillaz.getConcert().getLocation().getName(), actualTickets.get(0).getLocation());
 
 

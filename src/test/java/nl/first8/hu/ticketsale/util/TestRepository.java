@@ -11,6 +11,12 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
+import nl.first8.hu.ticketsale.venue.Artist;
+import nl.first8.hu.ticketsale.venue.Genre;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @Service
 public class TestRepository {
@@ -59,13 +65,13 @@ public class TestRepository {
         TicketId key = new TicketId(concert, account);
         return entityManager.find(Ticket.class, key);
     }
-    
+
     @Transactional(Transactional.TxType.REQUIRES_NEW)
-    public Concert createDefaultConcert(String artist, String locationName) {
+    public Concert createDefaultConcert(String artistName, String locationName) {
         Location location = createLocation(locationName);
+        Artist artist = createArtist(artistName, Genre.POP);
         Concert concert = new Concert();
         concert.setArtist(artist);
-        concert.setGenre("Grindcore");
         concert.setLocation(location);
         entityManager.persist(concert);
         return concert;
@@ -73,11 +79,11 @@ public class TestRepository {
     }
 
     @Transactional(Transactional.TxType.REQUIRES_NEW)
-    public Concert createConcert(String artist, String genre, String locationName) {
+    public Concert createConcert(String artistName, Genre genre, String locationName) {
         Location location = createLocation(locationName);
+        Artist artist = createArtist(artistName, genre);
         Concert concert = new Concert();
         concert.setArtist(artist);
-        concert.setGenre(genre);
         concert.setLocation(location);
         entityManager.persist(concert);
         return concert;
@@ -92,6 +98,36 @@ public class TestRepository {
         return location;
     }
 
+    @Transactional(Transactional.TxType.REQUIRES_NEW)
+    private Artist createArtist(String artistName, Genre genre) {
+        Artist artist = new Artist();
+        artist.setName(artistName);
+        artist.setGenre(genre);
+        entityManager.persist(artist);
+        return artist;
+    }
+
+    @Transactional(Transactional.TxType.REQUIRES_NEW)
+    public Concert createConcertWithDate(String artistName, Genre genre, String locationName, String date) {
+      SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy");
+      Date parsedDate = null;
+
+      try {
+        parsedDate = dateFormatter.parse(date);
+      } catch (ParseException pe) {
+        pe.printStackTrace();
+      }
+
+      Artist artist = createArtist(artistName, genre);
+      Location location = createLocation(locationName);
+      Concert concert = new Concert();
+      concert.setArtist(artist);
+      concert.setLocation(location);
+      concert.setDate(parsedDate);
+
+      entityManager.persist(concert);
+      return concert;
+    }
 
 
 }

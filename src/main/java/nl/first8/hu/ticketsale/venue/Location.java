@@ -1,9 +1,11 @@
 package nl.first8.hu.ticketsale.venue;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nl.first8.hu.ticketsale.registration.Account;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -13,6 +15,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property="@id")
 public class Location implements Serializable {
 
     @Id
@@ -23,6 +26,7 @@ public class Location implements Serializable {
     private String name;
 
     @OneToMany(mappedBy = "location")
+
     private List<Concert> concerts;
 
 }
